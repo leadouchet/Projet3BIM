@@ -1,11 +1,12 @@
 def CircadianRythme(t, initial_conditions, param) :
 
 """This function allows to simulate the cycle of proteins 
-during the circadian cycle. The inital_condition is a 
-dictionnary containing as keys the names of the molecule, 
-param is also a dictonnary containing as keys the name of the 
+during the circadian cycle. The inital_condition must be into a 
+in the order shows below, 
+param is a dictonnary containing as keys the name of the 
 parameter. dt and Run_time are numbers respectively describing 
-the integration step and the  Running time """
+the integration step and the  Running time. The function return a list 
+with de dQuantites for one step"""
 
 #-----------------------
 # Initial conditions  : 
@@ -143,4 +144,13 @@ the integration step and the  Running time """
 	dMp = Vsp * Bn**n/(Kap**n+Bn**n) - Vmp * Mp/(Kmp+Mp) - kdmp*Mp
 	dMc = Vsc * Bn**n/(Kac**n+Bn**n) - Vmc * Mc/(Kmc + Mc) - kdmc*Mc
 	dMb = Vsb * Kib**m/(Kib**m+Bn**m) - Vmb * Mb/(Kmb + Mb) - kdmb*Mb
+
+	#Phosphorylated and non-phosphorylated proteins PER and
+	# CRY in the cytosol : 
+
+	dPc = ksp * Mp - V1p*Pc/(Kp+Pc) + V2p * pcp/(Kdp + Pcp) + k4 * PCc - k3 * Pc * Cc - kdn * Pc
+	dCc = ksc * Mc - V1c * Cc / (Kp +Cc) + V2c * Ccp/(Kdp + Ccp) + k4 * PCc - k3 * Pc * Cc - kdnc * Cc
+	dPcp = V1p * Pc/(Kp + Pc) - V2p * Pcp/(Kdp + Pcp) - Vdpc * Pcp/(Kp+Pcp) - kdn * Pcp
+	dCcp = V1c * Cc/(Kp+Cc) - V2c * Ccp/(Kdp + Ccp) - vdcc * Ccp/(Kd + Ccp) - kdnCcp
+
 	
