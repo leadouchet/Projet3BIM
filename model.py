@@ -141,3 +141,6 @@ the integration step and the  Running time """
 	# mRNAs of per, Cry and Bmal : 
 
 	dMp = Vsp * Bn**n/(Kap**n+Bn**n) - Vmp * Mp/(Kmp+Mp) - kdmp*Mp
+	dMc = Vsc * Bn**n/(Kac**n+Bn**n) - Vmc * Mc/(Kmc + Mc) - kdmc*Mc
+	dMb = Vsb * Kib**m/(Kib**m+Bn**m) - Vmb * Mb/(Kmb + Mb) - kdmb*Mb
+	
