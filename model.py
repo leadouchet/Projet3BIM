@@ -1,16 +1,18 @@
-def CircadianRythme(t, initial_conditions, param) :
-"""This function allows to simulate the cycle of proteins 
-during the circadian cycle. The inital_condition must be into a 
-in the order shows below, 
-param is a dictonnary containing as keys the name of the 
-parameter. dt and Run_time are numbers respectively describing 
-the integration step and the  Running time. The function return a list 
-with de dQuantites for one step
+# -*- coding: utf-8 -*-
 
-The model has been built by Jean-Christophe Leloup, Albert Goldbeter
-in their article : Modeling the mammalian circadian clock :Sensitivity 
-analysis and multiplicity of oscillatory mechanisms
-"""
+def CircadianRythme(t, initial_conditions, param) :
+	"""This function allows to simulate the cycle of proteins 
+	during the circadian cycle. The inital_condition must be into a 
+	in the order shows below, 
+	param is a dictonnary containing as keys the name of the 
+	parameter. dt and Run_time are numbers respectively describing 
+	the integration step and the  Running time. The function return a list 
+	with de dQuantites for one step
+
+	The model has been built by Jean-Christophe Leloup, Albert Goldbeter
+	in their article : Modeling the mammalian circadian clock :Sensitivity 
+	analysis and multiplicity of oscillatory mechanisms.
+	"""
 #-----------------------
 # Initial conditions  : 
 #-----------------------
@@ -167,4 +169,7 @@ analysis and multiplicity of oscillatory mechanisms
 	dBcp = V1b * Bc/(Kp + Bc) - V2b * Bcp/(Kdp + Bcp) - Vdbc * Bcp/(Kd + Bcp) - kdn*Bcp
 	dBn = -V3b * Bn/(Kp+Bn) - V4b * Bnp/(Kdp+Bnp) + k5*Bc - k6 * Bn - k7 * Bn * Pcn + k8 * In - kdn*Bn
 	dBnp = V3b*Bn/(Kp+Bn) - V4b * Bnp/(Kdp + Bnp) - Vdbn * Bnp/(Kd + Bnp) - kdn * Bnp
-	
+
+	#Inactive complex between PER–CRY and CLOCK–BMAL1 in nucleus :
+	dIn = -k8 * In + k7 * Bn * Pcn -Vdin * In/(Kd + In) - kdn*In
+
