@@ -1,13 +1,5 @@
 def CircadianRythme(t, initial_conditions, param) :
 
-"""This function allows to simulate the cycle of proteins 
-during the circadian cycle. The inital_condition must be into a 
-in the order shows below, 
-param is a dictonnary containing as keys the name of the 
-parameter. dt and Run_time are numbers respectively describing 
-the integration step and the  Running time. The function return a list 
-with de dQuantites for one step"""
-
 #-----------------------
 # Initial conditions  : 
 #-----------------------
@@ -145,12 +137,17 @@ with de dQuantites for one step"""
 	dMc = Vsc * Bn**n/(Kac**n+Bn**n) - Vmc * Mc/(Kmc + Mc) - kdmc*Mc
 	dMb = Vsb * Kib**m/(Kib**m+Bn**m) - Vmb * Mb/(Kmb + Mb) - kdmb*Mb
 
-	#Phosphorylated and non-phosphorylated proteins PER and
-	# CRY in the cytosol : 
+	#Phosphorylated and non-phosphorylated proteins PER and CRY in the cytosol : 
 
 	dPc = ksp * Mp - V1p*Pc/(Kp+Pc) + V2p * pcp/(Kdp + Pcp) + k4 * PCc - k3 * Pc * Cc - kdn * Pc
 	dCc = ksc * Mc - V1c * Cc / (Kp +Cc) + V2c * Ccp/(Kdp + Ccp) + k4 * PCc - k3 * Pc * Cc - kdnc * Cc
 	dPcp = V1p * Pc/(Kp + Pc) - V2p * Pcp/(Kdp + Pcp) - Vdpc * Pcp/(Kp+Pcp) - kdn * Pcp
 	dCcp = V1c * Cc/(Kp+Cc) - V2c * Ccp/(Kdp + Ccp) - vdcc * Ccp/(Kd + Ccp) - kdnCcp
 
-	
+	# Phosphorylated and non-phosphorylated PER-CRY complex in cytosom and nucleus : 
+
+	dPCc = -V1pc * PCc/(Kp+PCc) + V2pc * PCcp/(Kdp + PCcp) - k4 * PCc + k3 * Pc * Cc + k2 * Pcn - k1 * PCc - kdn * PCc 
+	dPCn = -V3pc * Pcn/(Kp+Pcn) + V4pc * PCnp/(Kdp+PCnp) - k2*Pcn + k1*PCc - k7 * Bn * Pcn + k8 * In - kdn * Pcn
+	dPCcp = V1pc * PCc/(Kp+PCc) - V2pc * PCcp/(Kdp + PCcp) - Vdpcc * PCcp/(Kd + PCcp) - kdn * PCcp
+	dPCnp = V3pc * Pcn/(Kp+Pcn) - V4pc * PCnp/(Kdp + PCnp) - Vdpcn * PCnp/(Kd + PCnp) - kdn * PCnp
+
