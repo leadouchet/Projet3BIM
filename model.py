@@ -13,6 +13,15 @@ def CircadianRythme(t, initial_conditions, param) :
 	in their article : Modeling the mammalian circadian clock :Sensitivity 
 	analysis and multiplicity of oscillatory mechanisms.
 	"""
+#--------------------------
+# Parameters importation : 
+#--------------------------
+
+data = np.genfromtxt(param, delimiter=' ',
+                     dtype=[('Parameter', 'S12'), ('Set_1', float), ('Set_2', float),('Set_3', float),('Set_4', float)],
+                     skip_header=1)
+
+
 #-----------------------
 # Initial conditions  : 
 #-----------------------
