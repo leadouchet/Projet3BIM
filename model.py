@@ -181,4 +181,6 @@ data = np.genfromtxt(param, delimiter=' ',
 
 	#Inactive complex between PER–CRY and CLOCK–BMAL1 in nucleus :
 	dIn = -k8 * In + k7 * Bn * Pcn -Vdin * In/(Kd + In) - kdn*In
+	
+	return [dMp, dMc, dMb, pPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn]
 
