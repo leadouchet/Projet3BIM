@@ -1,4 +1,31 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
+import numpy as np
+import re
+
+
+
+
+def readparam(param, set) : 
+	file = param
+	data=pd.read_csv(file, sep=' ',header=0, index_col = 0)
+	parameters = {}
+	n = data.shape[0]
+	for i in range(n) :
+		c = data.iloc[i, set]
+		print re.match("[a-zA-Z]",c)  
+		c = re.split("\*",c)
+		print c
+		
+		if re.match("\D*",c) == None :
+			parameters[data.index[i]] = float(c[0])
+			print parameters
+
+		#if len(c) == 1 :
+
+
+
+readparam('param.csv', 1)
 
 def CircadianRythme(t, initial_conditions, param) :
 	"""This function allows to simulate the cycle of proteins 
@@ -17,9 +44,7 @@ def CircadianRythme(t, initial_conditions, param) :
 # Parameters importation : 
 #--------------------------
 
-data = np.genfromtxt(param, delimiter=' ',
-                     dtype=[('Parameter', 'S12'), ('Set_1', float), ('Set_2', float),('Set_3', float),('Set_4', float)],
-                     skip_header=1)
+
 
 
 #-----------------------
@@ -181,6 +206,8 @@ data = np.genfromtxt(param, delimiter=' ',
 
 	#Inactive complex between PER–CRY and CLOCK–BMAL1 in nucleus :
 	dIn = -k8 * In + k7 * Bn * Pcn -Vdin * In/(Kd + In) - kdn*In
+
+
 	
 	return [dMp, dMc, dMb, pPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn]
 
