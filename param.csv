@@ -51,6 +51,6 @@ vnmB 0.8 0.5 0.5 0.2
 vnmC 1.0 0.6 0.8 1.0
 vnmP 1.1 1.0 0.7 1.1
 vnsTot 1.0 1.0 1.0 1.0
-vnsB vnstot 1.2*vnstot 0.5*vnstot 0.7*vnstot
-vnsC 1.1*vnstot 1.5*vnstot 1.5*vnstot 0.8*vnstot
-vnsP 1.5*vnstot 1.3*vnstot 1.1*vnstot nstot
+vnsB vnsTot 1.2*vnsTot 0.5*vnsTot 0.7*vnsTot
+vnsC 1.1*vnsTot 1.5*vnsTot 1.5*vnsTot 0.8*vnsTot
+vnsP 1.5*vnsTot 1.3*vnsTot 1.1*vnsTot nsTot

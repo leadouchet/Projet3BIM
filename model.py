@@ -6,22 +6,23 @@ import re
 
 
 
-def readparam(param, set) : 
+def readparam(param, setting) : 
 	file = param
 	data=pd.read_csv(file, sep=' ',header=0, index_col = 0)
 	parameters = {}
 	n = data.shape[0]
 	for i in range(n) :
-		c = data.iloc[i, set]
-		print re.match("[a-zA-Z]",c)  
-		c = re.split("\*",c)
-		print c
-		
-		if re.match("\D*",c) == None :
-			parameters[data.index[i]] = float(c[0])
-			print parameters
+		c = data.iloc[i, setting]
+		if (re.search('[a-zA-Z]',c) == None) : 
+			   parameters[data.index[i]] = float(c)
+		else : 
+			c = re.split("\*",c)
+			print c		
+			if (len(c)== 1) :
+				parameters[data.index[i]] = parameters[c[0]]
+			else : 
+				parameters[data.index[i]] = float(c[0]) * parameters[c[1]]
 
-		#if len(c) == 1 :
 
 
 
