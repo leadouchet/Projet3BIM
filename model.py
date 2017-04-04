@@ -5,7 +5,6 @@ import re
 
 
 
-
 def readparam(param, setting) : 
 	file = param
 	data=pd.read_csv(file, sep=' ',header=0, index_col = 0)
@@ -16,17 +15,21 @@ def readparam(param, setting) :
 		if (re.search('[a-zA-Z]',c) == None) : 
 			   parameters[data.index[i]] = float(c)
 		else : 
-			c = re.split("\*",c)
-			print c		
+			c = re.split("\*",c)	
 			if (len(c)== 1) :
 				parameters[data.index[i]] = parameters[c[0]]
 			else : 
 				parameters[data.index[i]] = float(c[0]) * parameters[c[1]]
+	return parameters
 
 
+def set_initials(x) :
+	initial_condition = {}
+	molecules = [Mp, Mc, Mb, Pc, Cc, Pcp, Ccp, PCc, PCn, PCcp, PCnp, Bc, Bcp, Bn, Bnp, In]
+	for i in molecules : 
+		intial_condition[i] = x
+	return initial_condition
 
-
-readparam('param.csv', 1)
 
 def CircadianRythme(t, initial_conditions, param) :
 	"""This function allows to simulate the cycle of proteins 
@@ -53,39 +56,39 @@ def CircadianRythme(t, initial_conditions, param) :
 #-----------------------
 
 	# mRNAs of per, Cry and Bmal : 
-	Mp = initial_conditions[0]
-	Mc = initial_conditions [1]
-	Mb = initial_conditions[2]
+	Mp = initial_conditions['Mp']
+	Mc = initial_conditions ['Mc']
+	Mb = initial_conditions['Mb']
 
 	# Phosporylated and non-phosphorylated proteins PER
 	# and Cry in the cytosol : 
 
-	Pc = initial_conditions[3]
-	Bn = initial_conditions[4]
-	Cc = initial_conditions[5]
-	Pcp = initial_conditions[6]
-	Ccp = initial_conditions[7]
+	Pc = initial_conditions['Pc']
+	Bn = initial_conditions['Bn']
+	Cc = initial_conditions['Cc']
+	Pcp = initial_conditions['Pcp']
+	Ccp = initial_conditions['Ccp']
 
 	# Phosporylated and non-phosphorylated PER- Cry complexe
 	# in the cytosol and nucleus : 
 
-	PCc = initial_conditions[8]
-	Pcn = initial_conditions[9]
-	PCcp = initial_conditions[10]
-	PCnp = initial_conditions[11]
+	PCc = initial_conditions['PCc']
+	Pcn = initial_conditions['Pcn']
+	PCcp = initial_conditions['PCcp']
+	PCnp = initial_conditions['PCnp']
 
 	# Phosphorylated and non-phosphorylated protein BMAL1 in
 	# the cytosol and nucleus : 
 
-	Bc = initial_conditions[12]
-	Bcp = initial_conditions[13]
-	Bn = initial_conditions[14]
-	Bnp = initial_conditions[15]
+	Bc = initial_conditions['Bc']
+	Bcp = initial_conditions['Bcp']
+	Bn = initial_conditions['Bn']
+	Bnp = initial_conditions['Bnp']
 
 	# Inactive complex between PER-CRY and CLOCK-BMAL1 in 
 	# nucleus : 
 
-	In = initial_conditions[16]
+	In = initial_conditions['In']
 
 #--------------
 # Parameters : 
@@ -211,4 +214,16 @@ def CircadianRythme(t, initial_conditions, param) :
 
 	
 	return [dMp, dMc, dMb, pPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn]
+
+
+param = readparam('param.csv', 1)
+
+
+
+
+
+
+
+
+
 
