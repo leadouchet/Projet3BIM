@@ -25,9 +25,9 @@ def readparam(param, setting) :
 
 def set_initials(x) :
 	initial_condition = {}
-	molecules = [Mp, Mc, Mb, Pc, Cc, Pcp, Ccp, PCc, PCn, PCcp, PCnp, Bc, Bcp, Bn, Bnp, In]
+	molecules = ['Mp', 'Mc', 'Mb', 'Pc', 'Cc', 'Pcp', 'Ccp', 'PCc', 'Pcn', 'PCcp', 'PCnp', 'Bc', 'Bcp', 'Bn', 'Bnp', 'In']
 	for i in molecules : 
-		intial_condition[i] = x
+		initial_condition[i] = x
 	return initial_condition
 
 
@@ -44,12 +44,6 @@ def CircadianRythme(t, initial_conditions, param) :
 	in their article : Modeling the mammalian circadian clock :Sensitivity 
 	analysis and multiplicity of oscillatory mechanisms.
 	"""
-#--------------------------
-# Parameters importation : 
-#--------------------------
-
-
-
 
 #-----------------------
 # Initial conditions  : 
@@ -108,9 +102,9 @@ def CircadianRythme(t, initial_conditions, param) :
 
 	# Activation constant
 
-	Kap = param['Kap']
-	Kac = param['Kac']
-	Kib = param['Kib']
+	KAP = param['KAP']
+	KAC = param['KAC']
+	KIB = param['KIB']
 
 	#Nonspecific degradation rate constant
 
@@ -125,16 +119,16 @@ def CircadianRythme(t, initial_conditions, param) :
 	Kd = param['Kd']
 	Kdp = param['Kdp']
 	Kp = param['Kp']
-	Kmb = param['Kmb']
-	Kmc = param['Kmc']
-	Kmp = param['Kmp']
+	KmB = param['KmB']
+	KmC = param['KmC']
+	KmP = param['KmP']
 
 	#Rate constant for synthesis : 
 
 	kstot = param['kstot']
-	ksb = param['ksb']
-	ksc = param['ksc']
-	ksp = param['ksp']
+	ksB = param['ksB']
+	ksC = param['ksC']
+	ksP = param['ksP']
 
 	# Degree of cooperativity : 
 
@@ -146,37 +140,38 @@ def CircadianRythme(t, initial_conditions, param) :
 	Vphos = param['Vphos']
 	#Maximum Rate : 
 
-	V1b = param['V1b']
-	V1c = param['V1c']
-	V1p = param['V1p']
-	V1pc = param['V1pc']
-	V2b = param['V2b']
-	V2c = param['V2c']
-	V2pc = param['V2pc']
-	V3b = param['V3b']
-	V3pc = param['V3pc']
-	V4b = param['V4b']
-	V4pc = param['V4pc']
+	V1B = param['V1B']
+	V1C = param['V1C']
+	V1P = param['V1P']
+	V1PC = param['V1PC']
+	V2B = param['V2B']
+	V2C = param['V2C']
+	V2P = param['V2P']
+	V2PC = param['V2PC']
+	V3B = param['V3B']
+	V3PC = param['V3PC']
+	V4B = param['V4B']
+	V4PC = param['V4PC']
 
 	#Maximum rate of degradation
 
-	Vdbc = param['Vdbc']
-	Vdbn = param['Vdbn']
-	Vdcc = param['Vdcc']
-	Vdin = param['Vdin']
-	Vdpc = param['Vdpc']
-	Vdpcc = param['Vdpcc']
-	Vdpcn = param['Vdpcn']
-	Vmb = param['Vmb']
-	Vmc = param['Vmc']
-	Vmp = param['Vmp']
+	vndBC = param['vndBC']
+	vndBN = param['vndBN']
+	vndCC = param['vndCC']
+	vndIN = param['vndIN']
+	vndPC = param['vndPC']
+	vndPCC = param['vndPCC']
+	vndPCN = param['vndPCN']
+	vnmB = param['vnmB']
+	vnmC = param['vnmC']
+	vnmP = param['vnmP']
 
 	# Maximum rate of synthesis/transcription : 
 
-	Vstot = param['Vstot']
-	Vsb = param['Vsb']
-	Vsc = param['Vsc']
-	Vsp = param['Vsp']
+	vnsTot = param['vnsTot']
+	vnsB = param['vnsB']
+	vnsC = param['vnsC']
+	vnsP = param['vnsP']
 
 #--------------------------
 # Kinetic equations : 
@@ -184,41 +179,40 @@ def CircadianRythme(t, initial_conditions, param) :
 
 	# mRNAs of per, Cry and Bmal : 
 
-	dMp = Vsp * Bn**n/(Kap**n+Bn**n) - Vmp * Mp/(Kmp+Mp) - kdmp*Mp
-	dMc = Vsc * Bn**n/(Kac**n+Bn**n) - Vmc * Mc/(Kmc + Mc) - kdmc*Mc
-	dMb = Vsb * Kib**m/(Kib**m+Bn**m) - Vmb * Mb/(Kmb + Mb) - kdmb*Mb
+	dMp = vnsP * Bn**n/(KAP**n+Bn**n) - vnmP * Mp/(KmP+Mp) - kdmp*Mp
+	dMc = vnsC * Bn**n/(KAC**n+Bn**n) - vnmC * Mc/(KmC + Mc) - kdmc*Mc
+	dMb = vnsB * KIB**m/(KIB**m+Bn**m) - vnmB * Mb/(KmB + Mb) - kdmb*Mb
 
 	#Phosphorylated and non-phosphorylated proteins PER and CRY in the cytosol : 
 
-	dPc = ksp * Mp - V1p*Pc/(Kp+Pc) + V2p * pcp/(Kdp + Pcp) + k4 * PCc - k3 * Pc * Cc - kdn * Pc
-	dCc = ksc * Mc - V1c * Cc / (Kp +Cc) + V2c * Ccp/(Kdp + Ccp) + k4 * PCc - k3 * Pc * Cc - kdnc * Cc
-	dPcp = V1p * Pc/(Kp + Pc) - V2p * Pcp/(Kdp + Pcp) - Vdpc * Pcp/(Kp+Pcp) - kdn * Pcp
-	dCcp = V1c * Cc/(Kp+Cc) - V2c * Ccp/(Kdp + Ccp) - vdcc * Ccp/(Kd + Ccp) - kdnCcp
+	dPc = ksP * Mp - V1P*Pc/(Kp+Pc) + V2P * Pcp/(Kdp + Pcp) + k4 * PCc - k3 * Pc * Cc - kdn * Pc
+	dCc = ksC * Mc - V1C * Cc / (Kp +Cc) + V2C * Ccp/(Kdp + Ccp) + k4 * PCc - k3 * Pc * Cc - kdnc * Cc
+	dPcp = V1P * Pc/(Kp + Pc) - V2P * Pcp/(Kdp + Pcp) - vndPC * Pcp/(Kp+Pcp) - kdn * Pcp
+	dCcp = V1C * Cc/(Kp+Cc) - V2C * Ccp/(Kdp + Ccp) - vndCC * Ccp/(Kd + Ccp) - kdn * Ccp
 
 	# Phosphorylated and non-phosphorylated PER-CRY complex in cytosom and nucleus : 
 
-	dPCc = -V1pc * PCc/(Kp+PCc) + V2pc * PCcp/(Kdp + PCcp) - k4 * PCc + k3 * Pc * Cc + k2 * Pcn - k1 * PCc - kdn * PCc 
-	dPCn = -V3pc * Pcn/(Kp+Pcn) + V4pc * PCnp/(Kdp+PCnp) - k2*Pcn + k1*PCc - k7 * Bn * Pcn + k8 * In - kdn * Pcn
-	dPCcp = V1pc * PCc/(Kp+PCc) - V2pc * PCcp/(Kdp + PCcp) - Vdpcc * PCcp/(Kd + PCcp) - kdn * PCcp
-	dPCnp = V3pc * Pcn/(Kp+Pcn) - V4pc * PCnp/(Kdp + PCnp) - Vdpcn * PCnp/(Kd + PCnp) - kdn * PCnp
+	dPCc = -V1PC * PCc/(Kp+PCc) + V2PC * PCcp/(Kdp + PCcp) - k4 * PCc + k3 * Pc * Cc + k2 * Pcn - k1 * PCc - kdn * PCc 
+	dPCn = -V3PC * Pcn/(Kp+Pcn) + V4PC * PCnp/(Kdp+PCnp) - k2*Pcn + k1*PCc - k7 * Bn * Pcn + k8 * In - kdn * Pcn
+	dPCcp = V1PC * PCc/(Kp+PCc) - V2PC * PCcp/(Kdp + PCcp) - vndPCC * PCcp/(Kd + PCcp) - kdn * PCcp
+	dPCnp = V3PC * Pcn/(Kp+Pcn) - V4PC * PCnp/(Kdp + PCnp) - vndPCN * PCnp/(Kd + PCnp) - kdn * PCnp
 
 	#  Phosphorylated  and  non-phosphorylated  protein BMAL1 in the cytosol and nucleus
-	dBc = kib * Mb - V1b * Bc/(Kp+Bc) + V2b * Bcp/(Kdp + Bcp) - k5*Bc + k6*Bc - kdn*Bc
-	dBcp = V1b * Bc/(Kp + Bc) - V2b * Bcp/(Kdp + Bcp) - Vdbc * Bcp/(Kd + Bcp) - kdn*Bcp
-	dBn = -V3b * Bn/(Kp+Bn) - V4b * Bnp/(Kdp+Bnp) + k5*Bc - k6 * Bn - k7 * Bn * Pcn + k8 * In - kdn*Bn
-	dBnp = V3b*Bn/(Kp+Bn) - V4b * Bnp/(Kdp + Bnp) - Vdbn * Bnp/(Kd + Bnp) - kdn * Bnp
+	dBc = KIB * Mb - V1B * Bc/(Kp+Bc) + V2B * Bcp/(Kdp + Bcp) - k5*Bc + k6*Bc - kdn*Bc
+	dBcp = V1B * Bc/(Kp + Bc) - V2B * Bcp/(Kdp + Bcp) - vndBC * Bcp/(Kd + Bcp) - kdn*Bcp
+	dBn = -V3B * Bn/(Kp+Bn) - V4B * Bnp/(Kdp+Bnp) + k5*Bc - k6 * Bn - k7 * Bn * Pcn + k8 * In - kdn*Bn
+	dBnp = V3B*Bn/(Kp+Bn) - V4B * Bnp/(Kdp + Bnp) - vndBN * Bnp/(Kd + Bnp) - kdn * Bnp
 
 	#Inactive complex between PER–CRY and CLOCK–BMAL1 in nucleus :
-	dIn = -k8 * In + k7 * Bn * Pcn -Vdin * In/(Kd + In) - kdn*In
+	dIn = -k8 * In + k7 * Bn * Pcn -vndIN * In/(Kd + In) - kdn*In
 
-
-	
-	return [dMp, dMc, dMb, pPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn]
+	return [dMp, dMc, dMb, dPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn]
 
 
 param = readparam('param.csv', 1)
-
-
+print param
+init = set_initials(1)
+print CircadianRythme(10, init, param)
 
 
 
