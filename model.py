@@ -2,9 +2,14 @@
 import pandas as pd
 import numpy as np
 import re
+import scipy.integrate
+import matplotlib.pyplot as plt
 
+#=======================================================================
+#             FONCTION DEFINITION
+#=======================================================================
 
-
+#-----------------------------------------------------------------------
 def readparam(param, setting) : 
 	file = param
 	data=pd.read_csv(file, sep=' ',header=0, index_col = 0)
@@ -22,16 +27,15 @@ def readparam(param, setting) :
 				parameters[data.index[i]] = float(c[0]) * parameters[c[1]]
 	return parameters
 
-
-def set_initials(x) :
-	initial_condition = {}
-	molecules = ['Mp', 'Mc', 'Mb', 'Pc', 'Cc', 'Pcp', 'Ccp', 'PCc', 'Pcn', 'PCcp', 'PCnp', 'Bc', 'Bcp', 'Bn', 'Bnp', 'In']
-	for i in molecules : 
-		initial_condition[i] = x
+#-----------------------------------------------------------------------
+def set_initials(molecules,x) :
+	initial_condition = np.ones((len(molecules)))*x
+	"""for i in molecules : 
+		initial_condition[i] = x"""
 	return initial_condition
 
-
-def CircadianRythme(t, initial_conditions, param) :
+#-----------------------------------------------------------------------
+def CircadianRythme(initial_conditions,t, param,x) :
 	"""This function allows to simulate the cycle of proteins 
 	during the circadian cycle. The inital_condition must be into a 
 	in the order shows below, 
@@ -50,39 +54,39 @@ def CircadianRythme(t, initial_conditions, param) :
 #-----------------------
 
 	# mRNAs of per, Cry and Bmal : 
-	Mp = initial_conditions['Mp']
-	Mc = initial_conditions ['Mc']
-	Mb = initial_conditions['Mb']
+	Mp = initial_conditions[0]
+	Mc = initial_conditions [1]
+	Mb = initial_conditions[2]
 
 	# Phosporylated and non-phosphorylated proteins PER
 	# and Cry in the cytosol : 
 
-	Pc = initial_conditions['Pc']
-	Bn = initial_conditions['Bn']
-	Cc = initial_conditions['Cc']
-	Pcp = initial_conditions['Pcp']
-	Ccp = initial_conditions['Ccp']
+	Pc = initial_conditions[3]
+	Bn = initial_conditions[4]
+	Cc = initial_conditions[5]
+	Pcp = initial_conditions[6]
+	Ccp = initial_conditions[7]
 
 	# Phosporylated and non-phosphorylated PER- Cry complexe
 	# in the cytosol and nucleus : 
 
-	PCc = initial_conditions['PCc']
-	Pcn = initial_conditions['Pcn']
-	PCcp = initial_conditions['PCcp']
-	PCnp = initial_conditions['PCnp']
+	PCc = initial_conditions[8]
+	Pcn = initial_conditions[9]
+	PCcp = initial_conditions[10]
+	PCnp = initial_conditions[11]
 
 	# Phosphorylated and non-phosphorylated protein BMAL1 in
 	# the cytosol and nucleus : 
 
-	Bc = initial_conditions['Bc']
-	Bcp = initial_conditions['Bcp']
-	Bn = initial_conditions['Bn']
-	Bnp = initial_conditions['Bnp']
+	Bc = initial_conditions[12]
+	Bcp = initial_conditions[13]
+	Bn = initial_conditions[14]
+	Bnp = initial_conditions[15]
 
 	# Inactive complex between PER-CRY and CLOCK-BMAL1 in 
 	# nucleus : 
 
-	In = initial_conditions['In']
+	In = initial_conditions[16]
 
 #--------------
 # Parameters : 
@@ -208,12 +212,42 @@ def CircadianRythme(t, initial_conditions, param) :
 
 	return [dMp, dMc, dMb, dPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn]
 
-
+#=======================================================================
+#   MODELLING THE CIRCADIAN RYTHM
+#=======================================================================
+molecules = ['Mp', 'Mc', 'Mb', 'Pc', 'Bn', 'Cc', 'Pcp', 'Ccp', 'PCc', 'Pcn', 'PCcp', 'PCnp', 'Bc', 'Bcp', 'Bn', 'Bnp', 'In']
 param = readparam('param.csv', 1)
-print param
-init = set_initials(1)
-print CircadianRythme(10, init, param)
+init = set_initials(molecules, 20)
+t = np.arange(0, 100,0.1)
+print t
 
+print CircadianRythme(init,t, param,1)
+
+
+
+
+def test(y,t) : 
+	dydt = [y[0]-0.5*y[1], y[0]*0.5-0.2*y[1]]
+	return dydt
+"""
+ess = scipy.integrate.odeint(test, np.array([2,2]), t)
+print ess
+plt.plot(t, ess[:, 0], 'b', label=molecules[0])
+plt.plot(t, ess[:, 1], 'g', label=molecules[1])
+plt.xlabel('t')
+plt.grid()
+plt.show()
+"""
+
+res = scipy.integrate.odeint(CircadianRythme, init, t, args = (param,1))
+
+for i in range(len(molecules)) : 
+	plt.plot(t, res[:, i], label=molecules[i])
+	
+plt.legend(loc='best')
+plt.xlabel('t')
+plt.grid()
+plt.show()
 
 
 
