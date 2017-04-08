@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import re
-import scipy.integrate
+from scipy import integrate
 import matplotlib.pyplot as plt
 
 #=======================================================================
@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 
 #-----------------------------------------------------------------------
 def readparam(param, setting) : 
-	file = param
-	data=pd.read_csv(file, sep=' ',header=0, index_col = 0)
+	fichier = param
+	data=pd.read_csv(fichier, sep=' ',header=0, index_col = 0)
 	parameters = {}
 	n = data.shape[0]
 	for i in range(n) :
@@ -29,13 +29,13 @@ def readparam(param, setting) :
 
 #-----------------------------------------------------------------------
 def set_initials(molecules,x) :
-	initial_condition = np.ones((len(molecules)))*x
+	initial_condition = np.concatenate((np.ones((3))*5,np.ones((len(molecules)-3))*x), axis = 0)
 	"""for i in molecules : 
 		initial_condition[i] = x"""
 	return initial_condition
 
 #-----------------------------------------------------------------------
-def CircadianRythme(initial_conditions,t, param,x) :
+def CircadianRythme(t,initial_conditions) :
 	"""This function allows to simulate the cycle of proteins 
 	during the circadian cycle. The inital_condition must be into a 
 	in the order shows below, 
@@ -48,6 +48,11 @@ def CircadianRythme(initial_conditions,t, param,x) :
 	in their article : Modeling the mammalian circadian clock :Sensitivity 
 	analysis and multiplicity of oscillatory mechanisms.
 	"""
+#-----------------------
+# PARAMETERS IMPORTATION
+#-----------------------
+	fichier = 'param.csv'
+	param = readparam(fichier, 1)
 
 #-----------------------
 # Initial conditions  : 
@@ -62,31 +67,30 @@ def CircadianRythme(initial_conditions,t, param,x) :
 	# and Cry in the cytosol : 
 
 	Pc = initial_conditions[3]
-	Bn = initial_conditions[4]
-	Cc = initial_conditions[5]
-	Pcp = initial_conditions[6]
-	Ccp = initial_conditions[7]
+	Cc = initial_conditions[4]
+	Pcp = initial_conditions[5]
+	Ccp = initial_conditions[6]
 
 	# Phosporylated and non-phosphorylated PER- Cry complexe
 	# in the cytosol and nucleus : 
 
-	PCc = initial_conditions[8]
-	Pcn = initial_conditions[9]
-	PCcp = initial_conditions[10]
-	PCnp = initial_conditions[11]
+	PCc = initial_conditions[7]
+	Pcn = initial_conditions[8]
+	PCcp = initial_conditions[9]
+	PCnp = initial_conditions[10]
 
 	# Phosphorylated and non-phosphorylated protein BMAL1 in
 	# the cytosol and nucleus : 
 
-	Bc = initial_conditions[12]
-	Bcp = initial_conditions[13]
-	Bn = initial_conditions[14]
-	Bnp = initial_conditions[15]
+	Bc = initial_conditions[11]
+	Bcp = initial_conditions[12]
+	Bn = initial_conditions[13]
+	Bnp = initial_conditions[14]
 
 	# Inactive complex between PER-CRY and CLOCK-BMAL1 in 
 	# nucleus : 
 
-	In = initial_conditions[16]
+	In = initial_conditions[15]
 
 #--------------
 # Parameters : 
@@ -209,47 +213,68 @@ def CircadianRythme(initial_conditions,t, param,x) :
 
 	#Inactive complex between PER–CRY and CLOCK–BMAL1 in nucleus :
 	dIn = -k8 * In + k7 * Bn * Pcn -vndIN * In/(Kd + In) - kdn*In
-
-	return [dMp, dMc, dMb, dPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn]
+	
+	dydt = np.array([dMp, dMc, dMb, dPc, dCc, dPcp, dCcp, dPCc, dPCn, dPCcp, dPCnp, dBc, dBcp, dBn, dBnp, dIn])
+	return dydt.reshape(len(dydt),1)
 
 #=======================================================================
 #   MODELLING THE CIRCADIAN RYTHM
 #=======================================================================
-molecules = ['Mp', 'Mc', 'Mb', 'Pc', 'Bn', 'Cc', 'Pcp', 'Ccp', 'PCc', 'Pcn', 'PCcp', 'PCnp', 'Bc', 'Bcp', 'Bn', 'Bnp', 'In']
-param = readparam('param.csv', 1)
-init = set_initials(molecules, 20)
-t = np.arange(0, 100,0.1)
+molecules = ['Mp', 'Mc', 'Mb', 'Pc', 'Cc', 'Pcp', 'Ccp', 'PCc', 'Pcn', 'PCcp', 'PCnp', 'Bc', 'Bcp', 'Bn', 'Bnp', 'In']
+#param = readparam('param.csv', 1)
+
+"""
+t = np.linspace(0, 10, 1001)
 print t
-
-print CircadianRythme(init,t, param,1)
-
-
-
-
-def test(y,t) : 
-	dydt = [y[0]-0.5*y[1], y[0]*0.5-0.2*y[1]]
-	return dydt
-"""
-ess = scipy.integrate.odeint(test, np.array([2,2]), t)
-print ess
-plt.plot(t, ess[:, 0], 'b', label=molecules[0])
-plt.plot(t, ess[:, 1], 'g', label=molecules[1])
-plt.xlabel('t')
-plt.grid()
-plt.show()
 """
 
-res = scipy.integrate.odeint(CircadianRythme, init, t, args = (param,1))
+
+# The ``driver`` that will integrate the ODE(s):
+if __name__ == '__main__':
+ 
+    # Start by specifying the integrator:
+    # use ``vode`` with "backward differentiation formula"
+    r = integrate.ode(CircadianRythme).set_integrator('vode', method='bdf')
+ 
+    # Set the time range
+    t_start = 0.0
+    t_final = 10.0
+    delta_t = 0.1
+    # Number of time steps: 1 extra for initial condition
+    num_steps = np.floor((t_final - t_start)/delta_t) + 1
+ 
+    # Set initial condition(s): for integrating variable and time!
+    init = set_initials(molecules, 50)
+    r.set_initial_value(init, t_start)
+ 
+    # Additional Python step: create vectors to store trajectories
+    t = np.zeros((num_steps, 1))
+    res = np.zeros((num_steps, len(init)))
+    t[0] = t_start
+    res[0,:] = init
+
+ 
+    # Integrate the ODE(s) across each delta_t timestep
+    k = 1
+    while r.successful() and k < num_steps:
+        r.integrate(r.t + delta_t)
+        # Store the results to plot later
+        t[k] = r.t
+        res[k,:] = r.y
+        print k
+        k += 1
+
+
+#res = scipy.integrate.odeint(CircadianRythme, init, t, args = (param,1))
 
 for i in range(len(molecules)) : 
 	plt.plot(t, res[:, i], label=molecules[i])
-	
+plt.axis([0,10,0,50]) 
 plt.legend(loc='best')
 plt.xlabel('t')
 plt.grid()
+
 plt.show()
-
-
 
 
 
